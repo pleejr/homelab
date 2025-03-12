@@ -1,0 +1,33 @@
+---
+- name: Add Hosts
+  include_tasks: add_hosts.yml
+
+- name: Disable Swap
+  include_tasks: disable_swap.yml
+
+- name: Load Overlay Kernel Module
+  include_tasks: load_kernelmodules.yml
+
+- name: Enable IPv4 Packet Forwarding
+  include_tasks: enable_ipv4forwarding.yml
+
+- name: Remove Conflicting Packages
+  include_tasks: remove_packages.yml
+
+- name: Remove Docker Files
+  include_tasks: remove_dockerfiles.yml
+
+- name: Add Docker's GPG Key
+  include_tasks: add_dockergpgkey.yml
+
+- name: Add Docker Repository
+  include_tasks: add_dockerrepo.yml
+
+- name: Install Containerd
+  include_tasks: install_containerd.yml
+
+- name: Configure Containerd
+  include_tasks: configure_containerd.yml
+
+- name: Install Kubelet, Kubeadm, and Kubectl
+  include_tasks: install_kubex.yml

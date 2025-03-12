@@ -1,0 +1,38 @@
+---
+- name: Get Network Interfaces
+  ansible.builtin.setup:
+    filter: ansible_interfaces
+  register: network_facts
+
+- name: Parse Default Network Interface
+  set_fact:
+    default_interface: "{{ (network_facts.ansible_facts.ansible_interfaces | select('search', 'eth') | list)[0] }}"
+
+- name: Generate Netplan Configuration
+  become: true
+  copy:
+    dest: /etc/netplan/01-netcfg.yaml
+    content: |
+      network:
+        version: 2
+        ethernets:
+          {{ default_interface }}:
+            dhcp4: no
+            addresses:
+              - {{ node_ip_allocation }}/24
+            gateway4: {{ node_gateway }}
+            nameservers:
+              addresses:
+                - {{ nameserver_01 }}
+                - {{ nameserver_02 }}
+  notify: Apply Netplan
+
+- name: Wait for IP Configuration
+  wait_for:
+    host: "{{ node_ip_allocation }}"
+    port: 22
+    timeout: 60
+    delay: 10
+
+- name: Reconnect on New IP
+  meta: reset_connection

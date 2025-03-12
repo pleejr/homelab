@@ -1,0 +1,6 @@
+- name: Add Host Entry for cluster-endpoint
+  become: true
+  ansible.builtin.lineinfile:
+    path: /etc/hosts
+    line: "{{ control_plane_endpoint_ip }} {{ control_plane_endpoint_name }}"
+    state: present

@@ -1,0 +1,20 @@
+---
+- name: Disable Swap
+  command: swapoff -a
+
+- name: Remove Swap from /etc/fstab
+  lineinfile:
+    path: /etc/fstab
+    regexp: '.*swap.*'
+    state: absent
+
+- name: Mask Swap Service
+  systemd:
+    name: swap.target
+    masked: yes
+
+- name: Verify Swap Status
+  command: free -h
+  register: memory_info
+  changed_when: false
+  failed_when: "'Swap' in memory_info.stdout and memory_info.stdout.splitlines()[-1].split()[2] != '0B'"

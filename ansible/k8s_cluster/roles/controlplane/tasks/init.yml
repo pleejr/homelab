@@ -1,0 +1,50 @@
+- name: Check Initialization Status
+  stat:
+    path: /etc/kubernetes/admin.conf
+  register: kubeadm_config
+
+- name: Fail On Already Initialized
+  fail:
+    msg: "Kubernetes was already initialized and cannot be re-initialized."
+  when: kubeadm_config.stat.exists
+
+- name: Initialize Kubernetes Control Plane
+  become: true
+  command: kubeadm init --pod-network-cidr={{ pod_network_cidr }} --control-plane-endpoint={{ control_plane_endpoint_name }}
+  register: kubeadm_output
+  when: not kubeadm_config.stat.exists
+  changed_when: kubeadm_output.rc == 0
+  async: 600
+  poll: 10
+
+
+- name: Log Initialization Output
+  become: true
+  copy:
+    content: "{{ kubeadm_output.stdout }}\n{{ kubeadm_output.stderr }}"
+    dest: /var/log/kubeadm-init.log
+  when: kubeadm_output is defined
+
+- name: Create Directory - $HOME/.kube
+  file:
+    path: "{{ lookup('env', 'HOME') }}/.kube"
+    state: directory
+    mode: '0755'
+
+- name: Copy Kubernetes Admin.conf
+  become: true
+  copy:
+    src: /etc/kubernetes/admin.conf
+    dest: "{{ lookup('env', 'HOME') }}/.kube/config"
+    owner: "{{ ansible_user }}"
+    group: "{{ ansible_user }}"
+    mode: '0644'
+    remote_src: true
+
+- name: Change Kubeconfig Ownership
+  become: true
+  file:
+    path: "{{ lookup('env', 'HOME') }}/.kube/config"
+    owner: "{{ ansible_user }}"
+    group: "{{ ansible_user }}"
+    mode: '0644'

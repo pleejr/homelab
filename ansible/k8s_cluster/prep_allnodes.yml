@@ -1,0 +1,7 @@
+---
+- name: Prepare All Nodes
+  hosts: allnodes
+  gather_facts: false
+  roles:
+  - allnodes
+  

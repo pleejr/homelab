@@ -1,0 +1,19 @@
+- name: Load Kernel Module - overlay
+  command: sudo modprobe overlay
+  changed_when: false
+
+- name: Verify Module Loaded - overlay
+  shell: lsmod | grep overlay
+  register: overlay_check
+  changed_when: false
+  failed_when: "'overlay' not in overlay_check.stdout"
+
+- name: Load Kernel Module - br_netfilter
+  command: sudo modprobe br_netfilter
+  changed_when: false
+
+- name: Verify Module Loaded - br_netfilter
+  shell: lsmod | grep br_netfilter
+  register: br_netfilter_check
+  changed_when: false
+  failed_when: "'br_netfilter' not in br_netfilter_check.stdout"

@@ -1,0 +1,15 @@
+---
+- name: Remove Conflicting Packages
+  become: true
+  apt:
+    name: 
+      - docker.io
+      - docker-compose
+      - docker-compose-v2
+      - docker-doc
+      - podman-docker
+      - containerd
+      - runc
+    state: absent
+    purge: true
+    autoremove: true
