@@ -18,3 +18,12 @@
 - name: Install Calico CNI
   command: kubectl create -f /tmp/custom-resources.yaml
   when: "'primary_node' in group_names"
+
+- name: Download & Install Calicoctl
+  become: true
+  ansible.builtin.get_url:
+    url: "{{ binary_calicoctl }}"
+    dest: "/usr/bin/kubectl-calico"
+    mode: "0755"
+    owner: root
+    follow_redirects: all
