@@ -1,0 +1,15 @@
+---
+- name: Gather Remote Host Facts
+  ansible.builtin.setup:
+  when: "'all_nodes' in group_names"
+
+- name: Get Default MAC Address
+  set_fact:
+    mac_address: "{{ ansible_default_ipv4.macaddress }}"
+  when: "'all_nodes' in group_names"
+
+- name: Compare MAC Addresses
+  set_fact:
+    mac_addresses: "{{ hostvars | selectattr('mac_address', 'defined') | map(attribute='mac_address') | list }}"
+  failed_when: mac_addresses | unique | length != mac_addresses | length
+  when: "'local' in group_names"

@@ -1,0 +1,10 @@
+---
+- name: Add Aliases - Kubectl
+  blockinfile:
+    path: "{{ lookup('env', 'HOME') }}/.bashrc"
+    block: |
+      # kubectl aliases
+      alias k='kubectl'
+      
+    insertafter: EOF
+    create: true

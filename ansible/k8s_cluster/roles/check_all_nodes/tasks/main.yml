@@ -1,0 +1,3 @@
+---
+- name: Verify Unique MAC Addresses
+  include_tasks: compare_macaddresses.yml

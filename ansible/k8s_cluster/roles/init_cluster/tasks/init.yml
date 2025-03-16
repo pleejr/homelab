@@ -9,7 +9,6 @@
   when: kubeadm_config.stat.exists
 
 - name: Initialize Kubernetes Control Plane
-  become: true
   command: kubeadm init --pod-network-cidr={{ pod_network_cidr }} --control-plane-endpoint={{ control_plane_endpoint_name }}
   register: kubeadm_output
   when: not kubeadm_config.stat.exists
@@ -17,9 +16,7 @@
   async: 600
   poll: 10
 
-
 - name: Log Initialization Output
-  become: true
   copy:
     content: "{{ kubeadm_output.stdout }}\n{{ kubeadm_output.stderr }}"
     dest: /var/log/kubeadm-init.log
@@ -32,7 +29,6 @@
     mode: '0755'
 
 - name: Copy Kubernetes Admin.conf
-  become: true
   copy:
     src: /etc/kubernetes/admin.conf
     dest: "{{ lookup('env', 'HOME') }}/.kube/config"
@@ -42,7 +38,6 @@
     remote_src: true
 
 - name: Change Kubeconfig Ownership
-  become: true
   file:
     path: "{{ lookup('env', 'HOME') }}/.kube/config"
     owner: "{{ ansible_user }}"

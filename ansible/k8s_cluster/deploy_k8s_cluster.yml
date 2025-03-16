@@ -1,0 +1,42 @@
+---
+- name: Check All Nodes for Prerequistes
+  hosts: all_groups
+  become: true
+  gather_facts: false
+  roles:
+  - check_all_nodes
+
+- name: Prepare All Nodes
+  hosts: all_nodes
+  become: true
+  gather_facts: false
+  roles:
+  - prep_all_nodes
+
+- name: Initialize Kubernetes Cluster
+  hosts: primary_node
+  become: true
+  gather_facts: false
+  roles:
+  - init_cluster
+
+- name: Install CNI - Calico
+  hosts: primary_node
+  become: false
+  gather_facts: false
+  roles:
+  - install_cni_calico
+
+- name: Join Nodes to Cluster
+  hosts: all_nodes
+  become: true
+  gather_facts: false
+  roles:
+  - join_nodes
+
+- name: Check Cluster Readiness
+  hosts: primary_node
+  become: false
+  gather_facts: false
+  roles:
+  - check_cluster

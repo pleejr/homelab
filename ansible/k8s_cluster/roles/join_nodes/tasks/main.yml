@@ -1,0 +1,31 @@
+---
+- name: Retrieve Kubeadm Baseline Join Command
+  command: kubeadm token create --print-join-command
+  register: join_command
+  changed_when: false
+  when: "'primary_node' in group_names"
+
+- name: Retrieve a Cluster Certificate Key
+  command: kubeadm certs certificate-key
+  register: cert_key
+  changed_when: false
+  when: "'primary_node' in group_names"
+
+- name: Set Facts
+  set_fact:
+    join_command: "{{ join_command.stdout }}"
+    cert_key: "{{ cert_key.stdout }}"
+  delegate_to: localhost
+  run_once: true
+
+- name: Join Control Plane Nodes to Cluster
+  command: "{{ join_command }} --control-plane --certificate-key {{ cert_key }}"
+  register: controlplane_join_status
+  failed_when: "'This node has joined the cluster' not in controlplane_join_status.stdout"
+  when: "'controlplane_nodes' in group_names and 'primary_node' not in group_names"
+
+- name: Join Worker Nodes to Cluster
+  command: "{{ join_command }}"
+  register: worker_join_status
+  failed_when: "'This node has joined the cluster' not in worker_join_status.stdout"
+  when: "'worker_nodes' in group_names"

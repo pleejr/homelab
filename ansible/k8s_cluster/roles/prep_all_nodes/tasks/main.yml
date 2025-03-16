@@ -2,6 +2,9 @@
 - name: Add Hosts
   include_tasks: add_hosts.yml
 
+- name: Add Aliases
+  include_tasks: add_aliases.yml
+
 - name: Disable Swap
   include_tasks: disable_swap.yml
 

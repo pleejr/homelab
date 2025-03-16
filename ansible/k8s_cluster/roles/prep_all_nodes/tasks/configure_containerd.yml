@@ -1,25 +1,21 @@
 - name: Create Containerd Configuration Directory
-  become: true
   ansible.builtin.file:
     path: /etc/containerd
     state: directory
     mode: '0755'
 
 - name: Remove Existing Containerd Configuration
-  become: true
   file:
     path: /etc/containerd/config.toml
     state: absent
 
 - name: Generate Default Containerd Configuration
-  become: true
   ansible.builtin.command:
     cmd: containerd config default
   register: containerd_default_config
   changed_when: false
 
 - name: Write Containerd Configuration to /etc/containerd/config.toml
-  become: true
   ansible.builtin.copy:
     content: "{{ containerd_default_config.stdout }}\n"
     dest: /etc/containerd/config.toml
@@ -28,7 +24,6 @@
     mode: '0644'
 
 - name: Update Containerd Configuration - Enable Systemd Cgroup
-  become: true
   ansible.builtin.replace:
     path: /etc/containerd/config.toml
     regexp: 'SystemdCgroup = false'
@@ -36,7 +31,6 @@
   notify: Restart Containerd
 
 - name: Update Containerd Configuration - Update Sandbox Image
-  become: true
   ansible.builtin.replace:
     path: /etc/containerd/config.toml
     regexp: 'sandbox_image = "registry\.k8s\.io/pause:\d+\.\d+"'
@@ -46,7 +40,6 @@
 - meta: flush_handlers
 
 - name: Verify Containerd Service Status
-  become: true
   ansible.builtin.command:
     cmd: systemctl status containerd
   register: containerd_status

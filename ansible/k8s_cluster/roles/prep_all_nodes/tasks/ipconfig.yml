@@ -9,7 +9,6 @@
     default_interface: "{{ (network_facts.ansible_facts.ansible_interfaces | select('search', 'eth') | list)[0] }}"
 
 - name: Generate Netplan Configuration
-  become: true
   copy:
     dest: /etc/netplan/01-netcfg.yaml
     content: |

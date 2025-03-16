@@ -1,15 +1,12 @@
 - name: Reload Sysctl
-  become: true
   command: sysctl --system
 
 - name: Restart Containerd
-  become: true
   ansible.builtin.service:
     name: containerd
     state: restarted
 
 - name: Apply Netplan
-  become: true
   command: netplan apply
   async: 30
   poll: 0

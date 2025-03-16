@@ -1,6 +1,0 @@
----
-- name: Initialize Control Plane
-  hosts: node01
-  gather_facts: false
-  roles:
-  - controlplane

@@ -1,0 +1,20 @@
+---
+- name: Install Tigera Operator
+  command: kubectl create -f {{ manifest_tigera_operator }}
+  when: "'primary_node' in group_names"
+
+- name: Download Calico CNI Manifest
+  ansible.builtin.get_url:
+    url: "{{ manifest_calico_crd }}"
+    dest: "/tmp/custom-resources.yaml"
+    mode: "0644"
+
+- name: Update Calico Configuration - Default IP Pool
+  ansible.builtin.replace:
+    path: "/tmp/custom-resources.yaml"
+    regexp: 'cidr: 192.168.0.0/16'
+    replace: 'cidr: {{ pod_network_cidr }}'
+
+- name: Install Calico CNI
+  command: kubectl create -f /tmp/custom-resources.yaml
+  when: "'primary_node' in group_names"

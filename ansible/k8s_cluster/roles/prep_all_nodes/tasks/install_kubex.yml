@@ -1,6 +1,5 @@
 ---
 - name: Update Package Cache & Install Dependencies
-  become: true
   apt:
     update_cache: yes
     name:
@@ -12,38 +11,32 @@
   ignore_errors: true
 
 - name: Create Keyrings Directory
-  become: true
   file:
     path: /etc/apt/keyrings
     state: directory
     mode: '0755'
 
 - name: Remove Existing Kubernetes Keyring
-  become: true
   file:
     path: /tmp/kubernetes-apt-keyring.key
     state: absent
 
 - name: Download Kubernetes Packages Public Signing Key
-  become: true
   shell: curl -fsSL https://pkgs.k8s.io/core:/stable:/{{ kubernetes_version }}/deb/Release.key -o /tmp/kubernetes-apt-keyring.key
   args:
     creates: /tmp/kubernetes-apt-keyring.key
 
 - name: Remove Existing Kubernetes GPG Keyring
-  become: true
   file:
     path: /etc/apt/keyrings/kubernetes-apt-keyring.gpg
     state: absent
 
 - name: Convert Kubernetes Key to GPG Format
-  become: true
   shell: gpg --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg /tmp/kubernetes-apt-keyring.key
   args:
     creates: /etc/apt/keyrings/kubernetes-apt-keyring.gpg
 
 - name: Overwrite Kubernetes Apt Repository Configuration
-  become: true
   copy:
     content: "deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/{{ kubernetes_version }}/deb/ /\n"
     dest: /etc/apt/sources.list.d/kubernetes.list
@@ -52,12 +45,10 @@
     group: root
 
 - name: Update Package Cache
-  become: true
   apt:
     update_cache: yes
 
 - name: Install Kubelet, Kubeadm, and Kubectl
-  become: true
   apt:
     name:
       - kubelet
@@ -66,7 +57,6 @@
     state: present
 
 - name: Hold Kubelet, Kubeadm, and Kubectl Packages
-  become: true
   dpkg_selections:
     name: "{{ item }}"
     selection: hold

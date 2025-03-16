@@ -1,17 +1,14 @@
 - name: Get Ubuntu Codename
-  become: true
   ansible.builtin.command: lsb_release -sc
   register: ubuntu_codename
   changed_when: false
 
 - name: Get Dpkg Architecture
-  become: true
   ansible.builtin.command: dpkg --print-architecture
   register: dpkg_arch
   changed_when: false
 
 - name: Verify Docker Repository
-  become: true
   ansible.builtin.copy:
     dest: /etc/apt/sources.list.d/docker.list
     content: |
@@ -21,6 +18,5 @@
     mode: '0644'
 
 - name: Update Apt Package Cache
-  become: true
   ansible.builtin.apt:
     update_cache: yes

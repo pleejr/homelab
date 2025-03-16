@@ -1,0 +1,12 @@
+---
+- name: Poll Kubernetes Resource Readiness
+  shell: kubectl get all --all-namespaces -o json | jq '[.items[] | select(.status.conditions[]?.status != "True")] | length'
+  register: kubernetes_check
+  until: kubernetes_check.stdout | int == 0
+  retries: "{{ readiness_retries }}"
+  delay: "{{ readiness_interval_seconds }}"
+  failed_when: kubernetes_check.stdout | int > 0
+
+- name: Success
+  debug:
+    msg: "Cluster is ready!"
