@@ -1,13 +1,24 @@
-ansible_python_interpreter: /usr/bin/python3
-control_plane_endpoint_name: cluster-endpoint
-control_plane_endpoint_ip: "192.168.2.30"
+# VERSION CONFIGURATIONS
+calico_version: "v3.29.2"
+kubernetes_image_pause_version: "3.10"
 kubernetes_version: "v1.32"
-manifest_calico_crd: https://raw.githubusercontent.com/projectcalico/calico/v3.29.2/manifests/custom-resources.yaml
-manifest_tigera_operator: https://raw.githubusercontent.com/projectcalico/calico/v3.29.2/manifests/tigera-operator.yaml
+
+# SYSTEM CONFIGURATIONS
+ansible_python_interpreter: "/usr/bin/python3"
+node_gateway: "192.168.2.254"
+
+# KUBERNETES CONFIGURATIONS
+control_plane_endpoint_name: "cluster-endpoint"
+control_plane_endpoint_ip: "192.168.2.30"
 nameserver_01: "8.8.8.8"
 nameserver_02: "8.8.4.4"
-node_gateway: "192.168.2.254"
-pod_network_cidr: 10.244.0.0/16
+pod_network_cidr: "10.244.0.0/16"
+
+# CUSTOM CONFIGURATIONS
 readiness_retries: 12
 readiness_interval_seconds: 10
-sandbox_pause_image_version: "3.10"
+
+# EXTERNAL REFERENCES
+binary_calicoctl: "https://github.com/projectcalico/calico/releases/download/{{ calico_version }}/calicoctl-linux-arm64"
+manifest_calico_crd: "https://raw.githubusercontent.com/projectcalico/calico/{{ calico_version }}/manifests/custom-resources.yaml"
+manifest_tigera_operator: "https://raw.githubusercontent.com/projectcalico/calico/{{ calico_version }}/manifests/tigera-operator.yaml"
