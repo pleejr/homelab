@@ -34,7 +34,7 @@
   ansible.builtin.replace:
     path: /etc/containerd/config.toml
     regexp: 'sandbox_image = "registry\.k8s\.io/pause:\d+\.\d+"'
-    replace: 'sandbox_image = "registry.k8s.io/pause:{{ sandbox_pause_image_version }}"'
+    replace: 'sandbox_image = "registry.k8s.io/pause:{{ kubernetes_image_pause_version }}"'
   notify: Restart Containerd
 
 - meta: flush_handlers
