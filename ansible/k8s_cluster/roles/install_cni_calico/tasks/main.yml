@@ -1,22 +1,59 @@
 ---
+- name: Create Namespace (tigera-operator)
+  kubernetes.core.k8s:
+    name: tigera-operator
+    api_version: v1
+    kind: Namespace
+    state: present
+  when: "'primary_node' in group_names"
+
+- name: Create Kubernetes Secret (dockerhub-ro)
+  kubernetes.core.k8s:
+    state: present
+    api_version: v1
+    kind: Secret
+    metadata:
+      name: dockerhub-ro
+      namespace: tigera-operator
+    data:
+      .dockerconfigjson: "{{ lookup('file', 'files/docker-config.json') | b64encode }}"
+    type: kubernetes.io/dockerconfigjson
+  when: "'primary_node' in group_names"
+
+- name: Download Tigera Manifest
+  ansible.builtin.get_url:
+    url: "{{ manifest_tigera_operator }}"
+    dest: "/tmp/tigera-operator.yml"
+    mode: "0644"
+  when: "'primary_node' in group_names"
+
+- name: Update Tigera Configuration - ImagePullSecret
+  ansible.builtin.replace:
+    path: "/tmp/tigera-operator.yml"
+    regexp: 'imagePullSecrets:\n  \[\]'
+    replace: 'imagePullSecrets:\n  - name: dockerhub-ro'
+  when: "'primary_node' in group_names"
+
 - name: Install Tigera Operator
-  command: kubectl create -f {{ manifest_tigera_operator }}
+  command: kubectl apply -f /tmp/tigera-operator.yml
   when: "'primary_node' in group_names"
 
 - name: Download Calico CNI Manifest
   ansible.builtin.get_url:
     url: "{{ manifest_calico_crd }}"
-    dest: "/tmp/custom-resources.yaml"
+    dest: "/tmp/calico-crd.yml"
     mode: "0644"
+  when: "'primary_node' in group_names"
 
 - name: Update Calico Configuration - Default IP Pool
   ansible.builtin.replace:
-    path: "/tmp/custom-resources.yaml"
+    path: "/tmp/calico-crd.yml"
     regexp: 'cidr: 192.168.0.0/16'
     replace: 'cidr: {{ pod_network_cidr }}'
+  when: "'primary_node' in group_names"
 
 - name: Install Calico CNI
-  command: kubectl create -f /tmp/custom-resources.yaml
+  command: kubectl apply -f /tmp/calico-crd.yml
   when: "'primary_node' in group_names"
 
 - name: Download & Install Calicoctl
@@ -27,3 +64,4 @@
     mode: "0755"
     owner: root
     follow_redirects: all
+  when: "'controlplane_nodes' in group_names"

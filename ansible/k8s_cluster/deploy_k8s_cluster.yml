@@ -21,7 +21,7 @@
   - init_cluster
 
 - name: Install CNI - Calico
-  hosts: primary_node
+  hosts: all_nodes
   become: false
   gather_facts: false
   roles:
