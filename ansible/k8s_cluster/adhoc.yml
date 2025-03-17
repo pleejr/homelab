@@ -1,0 +1,6 @@
+---
+- name: Ad Hoc Tasks
+  hosts: node01
+  become: false
+  gather_facts: false
+  tasks:
