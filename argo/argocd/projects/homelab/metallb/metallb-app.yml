@@ -18,3 +18,53 @@ spec:
       selfHeal: true
     syncOptions:
     - CreateNamespace=true
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: metallb-chart
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://metallb.github.io/metallb
+    targetRevision: 0.14.9
+    chart: metallb
+    helm:
+      values: |
+        controller:
+          enabled: true
+        speaker:
+          enabled: true
+        crds:
+          enabled: true
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: metallb-system
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+    - CreateNamespace=true
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: metallb-configs
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: git@github.com:pleejr/homelab.git
+    targetRevision: HEAD
+    path: argo/argocd/projects/homelab/metallb/metallb-configs.yml
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: metallb-system
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+  dependsOn:
+    - metallb-chart
