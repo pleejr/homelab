@@ -41,7 +41,7 @@ spec:
   source:
     repoURL: https://github.com/pleejr/homelab
     targetRevision: HEAD
-    path: argo/argocd/projects/homelab/metallb/configs.yml
+    path: argo/argocd/projects/homelab/metallb/configs
   destination:
     server: https://kubernetes.default.svc
     namespace: metallb-system
