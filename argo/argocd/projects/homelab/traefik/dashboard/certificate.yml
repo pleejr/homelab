@@ -1,7 +1,7 @@
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
-  name: traefik-ingressroute-cert-production
+  name: traefik-cert-production
   namespace: traefik
 spec:
   secretName: traefik-cert-secret-production
