@@ -18,4 +18,4 @@ spec:
     - name: api@internal
       kind: TraefikService
   tls:
-    secretName: traefik-ingressroute-cert-staging
+    secretName: traefik-cert-secret-staging
