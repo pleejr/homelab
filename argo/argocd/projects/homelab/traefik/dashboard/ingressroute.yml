@@ -18,4 +18,4 @@ spec:
     - name: api@internal
       kind: TraefikService
   tls:
-    secretName: traefik-cert-secret-staging
+    secretName: traefik-cert-secret-production
