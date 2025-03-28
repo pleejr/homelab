@@ -9,7 +9,7 @@ spec:
   entryPoints:
   - websecure
   routes:
-  - match: Host(`traefik.pleejr.org`)
+  - match: Host(`traefik.local.pleejr.org`)
     kind: Rule
     middlewares:
     - name: traefik-dashboard-basicauth
