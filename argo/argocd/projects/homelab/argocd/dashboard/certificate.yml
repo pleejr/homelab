@@ -9,4 +9,4 @@ spec:
     name: letsencrypt-production
     kind: ClusterIssuer
   dnsNames:
-  - argocd.pleejr.org
+  - argocd.local.pleejr.org

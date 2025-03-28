@@ -9,4 +9,4 @@ spec:
     name: letsencrypt-production
     kind: ClusterIssuer
   dnsNames:
-  - traefik.pleejr.org
+  - traefik.local.pleejr.org
