@@ -7,21 +7,16 @@ metadata:
     kubernetes.io/ingress.class: traefik-external
 spec:
   entryPoints:
-  - web
+  - websecure
   routes:
-  - match: Host(`argocd.pleejr.org`) && PathPrefix(`/dashboard`)
+  - match: Host(`argocd.pleejr.org`)
     kind: Rule
-    middlewares:
-    - name: argocd-dashboard-basicauth
     priority: 10
     services:
     - name: argocd-server
       port: 80
-      scheme: http
-  - match: Host(`argocd.pleejr.org`) && PathPrefix(`/api`) && Headers(`Content-Type`, `application/grpc`)
+  - match: Host(`argocd.pleejr.org`) && Headers(`Content-Type`, `application/grpc`)
     kind: Rule
-    middlewares:
-    - name: argocd-dashboard-basicauth
     priority: 11
     services:
     - name: argocd-server
