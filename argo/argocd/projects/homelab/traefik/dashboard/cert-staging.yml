@@ -5,7 +5,7 @@ metadata:
   namespace: traefik
 spec:
   secretName: traefik-cert-secret-staging
-  issueRef:
+  issuerRef:
     name: letsencrypt-staging
     kind: ClusterIssuer
   dnsNames:
