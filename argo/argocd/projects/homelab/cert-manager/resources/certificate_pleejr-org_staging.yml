@@ -1,7 +1,7 @@
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
-  name: pleejr-org
+  name: pleejr-org-staging
   namespace: traefik
 spec:
   secretName: pleejr-org-tls-staging
