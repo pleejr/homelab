@@ -2,7 +2,7 @@ apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
   name: argocd-cert-production
-  namespace: traefik
+  namespace: argocd
 spec:
   secretName: argocd-cert-secret-production
   issuerRef:
