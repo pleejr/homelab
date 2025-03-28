@@ -4,9 +4,9 @@ metadata:
   name: pleejr-org
   namespace: traefik
 spec:
-  secretName: pleejr-org-tls
+  secretName: pleejr-org-tls-staging
   issuerRef:
-    name: letsencrypt-dns01
+    name: letsencrypt-staging
     kind: ClusterIssuer
   commonName: "*.pleejr.org"
   dnsNames:

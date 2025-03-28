@@ -1,7 +1,7 @@
 apiVersion: cert-manager.io/v1
 kind: ClusterIssuer
 metadata:
-  name: letsencrypt-dns01
+  name: letsencrypt-staging
 spec:
   acme:
     email: preston@pleejr.com
