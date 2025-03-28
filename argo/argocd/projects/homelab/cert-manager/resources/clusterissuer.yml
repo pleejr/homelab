@@ -5,12 +5,16 @@ metadata:
 spec:
   acme:
     email: preston@pleejr.com
-    server: https://acme-v02.api.letsencrypt.org/directory
+    server: https://acme-staging-v02.api.letsencrypt.org/directory
     privateKeySecretRef:
       name: letsencrypt-dns-key
     solvers:
     - dns01:
         cloudflare:
+          email: preston@pleejr.com
           apiTokenSecretRef:
             name: cloudflare-api-token-secret
             key: api-token
+      selector:
+        dnsZones:
+        - "pleejr.org"
