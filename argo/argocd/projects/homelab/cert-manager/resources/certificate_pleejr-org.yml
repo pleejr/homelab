@@ -2,12 +2,13 @@ apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
   name: pleejr-org
-  namespace: cert-manager
+  namespace: default
 spec:
   secretName: pleejr-org-tls
   issuerRef:
     name: letsencrypt-dns01
     kind: ClusterIssuer
+  commonName: "*.pleejr.org"
   dnsNames:
   - pleejr.org
   - "*.pleejr.org"
