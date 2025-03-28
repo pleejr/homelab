@@ -9,7 +9,7 @@ spec:
   entryPoints:
   - web
   routes:
-  - match: Host(`argocd.pleejr.org`)
+  - match: Host(`argocd.pleejr.org`) && PathPrefix(`/dashboard`)
     kind: Rule
     middlewares:
     - name: argocd-dashboard-basicauth
@@ -18,7 +18,7 @@ spec:
     - name: argocd-server
       port: 80
       scheme: http
-  - match: Host(`argocd.pleejr.org`) && Headers(`Content-Type`, `application/grpc`)
+  - match: Host(`argocd.pleejr.org`) && PathPrefix(`/api`) && Headers(`Content-Type`, `application/grpc`)
     kind: Rule
     middlewares:
     - name: argocd-dashboard-basicauth
