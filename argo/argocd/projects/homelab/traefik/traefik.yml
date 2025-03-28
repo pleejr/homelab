@@ -12,12 +12,12 @@ spec:
     helm:
       values: |
         globalArguments:
-        - "--global.sendanonymoususage=false"
-        - "--global.checknewversion=false"
+          - "--global.sendanonymoususage=false"
+          - "--global.checknewversion=false"
 
         additionalArguments:
-        - "--serversTransport.insecureSkipVerify=true"
-        - "--log.level=INFO"
+          - "--serversTransport.insecureSkipVerify=true"
+          - "--log.level=INFO"
 
         deployment:
           enabled: true
