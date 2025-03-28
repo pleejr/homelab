@@ -15,7 +15,7 @@ spec:
     services:
     - name: argocd-server
       port: 80
-  - match: Host(`argocd.local.pleejr.org`) && Headers(`Content-Type`, `application/grpc`)
+  - match: Host(`argocd.local.pleejr.org`) && Header(`Content-Type`, `application/grpc`)
     kind: Rule
     priority: 11
     services:
