@@ -13,16 +13,18 @@ spec:
     kind: Rule
     middlewares:
     - name: argocd-dashboard-basicauth
+    priority: 10
     services:
     - name: argocd-server
-      port: 443
+      port: 80
   - match: Host(`argocd.pleejr.org`) && Header(`Content-Type`, `application/grpc`)
     kind: Rule
     middlewares:
     - name: argocd-dashboard-basicauth
+    priority: 11
     services:
     - name: argocd-server
-      port: 443
+      port: 80
       scheme: h2c
   tls:
     secretName: argocd-cert-secret-production
