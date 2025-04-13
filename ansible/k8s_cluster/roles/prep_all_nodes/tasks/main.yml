@@ -34,3 +34,6 @@
 
 - name: Install Kubelet, Kubeadm, and Kubectl
   include_tasks: install_kubex.yml
+
+- name: Install Ansible Kubernetes Module
+  include_tasks: install_ansible_k8s.yml

@@ -19,12 +19,14 @@
   run_once: true
 
 - name: Join Control Plane Nodes to Cluster
+  become: true
   command: "{{ join_command }} --control-plane --certificate-key {{ cert_key }}"
   register: controlplane_join_status
   failed_when: "'This node has joined the cluster' not in controlplane_join_status.stdout"
   when: "'controlplane_nodes' in group_names and 'primary_node' not in group_names"
 
 - name: Join Worker Nodes to Cluster
+  become: true
   command: "{{ join_command }}"
   register: worker_join_status
   failed_when: "'This node has joined the cluster' not in worker_join_status.stdout"

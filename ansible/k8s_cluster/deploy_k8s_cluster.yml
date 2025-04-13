@@ -27,16 +27,24 @@
   roles:
   - install_cni_calico
 
-- name: Join Nodes to Cluster
-  hosts: all_nodes
-  become: true
-  gather_facts: false
-  roles:
-  - join_nodes
+# more work needs to be done to ensure a smooth automated join
+# for now, run the following on the control plane node:
+#   1)  kubeadm token create --print-join-command
+#       use this join command and append "--control-plane --certificate-key <cert_key>"
+#   2)  sudo kubeadm init phase upload-certs --upload-certs
+#       use the certificate key from this command with the previous join command to join a control node
+#   3)  join worker nodes with the unaltered join command
 
-- name: Check Cluster Readiness
-  hosts: primary_node
-  become: false
-  gather_facts: false
-  roles:
-  - check_cluster
+# - name: Join Nodes to Cluster
+#   hosts: all_nodes
+#   become: true
+#   gather_facts: false
+#   roles:
+#   - join_nodes
+
+# - name: Check Cluster Readiness
+#   hosts: primary_node
+#   become: false
+#   gather_facts: false
+#   roles:
+#   - check_cluster

@@ -1,4 +1,17 @@
 ---
+- name: Ensure Python3-Pip Installed
+  become: true
+  ansible.builtin.package:
+    name: python3-pip
+    state: present
+
+- name: Install Kubernetes Python Module
+  become: true
+  ansible.builtin.apt:
+    name: python3-kubernetes
+    state: present
+    update_cache: yes
+
 - name: Create Namespace (tigera-operator)
   kubernetes.core.k8s:
     name: tigera-operator
@@ -10,14 +23,15 @@
 - name: Create Kubernetes Secret (dockerhub-ro)
   kubernetes.core.k8s:
     state: present
-    api_version: v1
-    kind: Secret
-    metadata:
-      name: dockerhub-ro
-      namespace: tigera-operator
-    data:
-      .dockerconfigjson: "{{ lookup('file', 'files/docker-config.json') | b64encode }}"
-    type: kubernetes.io/dockerconfigjson
+    definition:
+      apiVersion: v1
+      kind: Secret
+      metadata:
+        name: dockerhub-ro
+        namespace: tigera-operator
+      data:
+        .dockerconfigjson: "{{ lookup('file', 'files/docker-config.json') | b64encode }}"
+      type: kubernetes.io/dockerconfigjson
   when: "'primary_node' in group_names"
 
 - name: Download Tigera Manifest
@@ -34,8 +48,13 @@
     replace: 'imagePullSecrets:\n  - name: dockerhub-ro'
   when: "'primary_node' in group_names"
 
-- name: Install Tigera Operator
-  command: kubectl apply -f /tmp/tigera-operator.yml
+- name: Attempt to Create Tigera Operator
+  command: kubectl create -f /tmp/tigera-operator.yml
+  when: "'primary_node' in group_names"
+  ignore_errors: true
+
+- name: Attempt to Replace Preexisting Tigera Operator
+  command: kubectl replace -f /tmp/tigera-operator.yml
   when: "'primary_node' in group_names"
 
 - name: Download Calico CNI Manifest
@@ -52,8 +71,13 @@
     replace: 'cidr: {{ pod_network_cidr }}'
   when: "'primary_node' in group_names"
 
-- name: Install Calico CNI
-  command: kubectl apply -f /tmp/calico-crd.yml
+- name: Attempt to Create Calico CNI
+  command: kubectl create -f /tmp/calico-crd.yml
+  when: "'primary_node' in group_names"
+  ignore_errors: true
+
+- name: Attempt to Replace Preexisting Calico CNI
+  command: kubectl replace -f /tmp/calico-crd.yml
   when: "'primary_node' in group_names"
 
 - name: Download & Install Calicoctl
@@ -63,5 +87,4 @@
     dest: "/usr/bin/kubectl-calico"
     mode: "0755"
     owner: root
-    follow_redirects: all
   when: "'controlplane_nodes' in group_names"
