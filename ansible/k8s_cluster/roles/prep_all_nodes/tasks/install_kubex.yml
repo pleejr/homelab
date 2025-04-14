@@ -36,7 +36,12 @@
   args:
     creates: /etc/apt/keyrings/kubernetes-apt-keyring.gpg
 
-- name: Overwrite Kubernetes Apt Repository Configuration
+- name: Remove Existing Kubernetes Apt Repository Configuration
+  file:
+    path: /etc/apt/sources.list.d/kubernetes.list
+    state: absent
+
+- name: Create Kubernetes Apt Repository Configuration
   copy:
     content: "deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/{{ kubernetes_version }}/deb/ /\n"
     dest: /etc/apt/sources.list.d/kubernetes.list
