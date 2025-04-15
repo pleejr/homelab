@@ -5,6 +5,8 @@ metadata:
   namespace: traefik
 spec:
   secretName: traefik-cert-secret-production
-  kind: ClusterIssuer
+  issuerRef:
+    name: letsencrypt-production
+    kind: ClusterIssuer
 dnsNames:
   - traefik.local.pleejr.org

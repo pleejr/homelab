@@ -5,6 +5,8 @@ metadata:
   namespace: argocd
 spec:
   secretName: argocd-cert-secret-production
-  kind: ClusterIssuer
+  issuerRef:
+    name: letsencrypt-production
+    kind: ClusterIssuer
 dnsNames:
   - argocd.local.pleejr.org
