@@ -14,7 +14,7 @@ spec:
     priority: 10
     services:
     - name: argocd-server
-      port: 80
+      port: 443
   - match: Host(`argocd.local.pleejr.org`) && Header(`Content-Type`, `application/grpc`)
     kind: Rule
     priority: 11
