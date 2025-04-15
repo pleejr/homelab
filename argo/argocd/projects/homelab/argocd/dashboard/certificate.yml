@@ -1,12 +1,12 @@
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
-  name: argocd-certificate-production
+  name: argocd-cert-prod
   namespace: argocd
 spec:
-  secretName: argocd-cert-secret-production
+  secretName: argocd-cert-prod
   issuerRef:
-    name: letsencrypt-production
+    name: letsencrypt-prod
     kind: ClusterIssuer
   dnsNames:
     - argocd.local.pleejr.org

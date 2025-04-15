@@ -5,7 +5,6 @@ metadata:
   namespace: argocd
   annotations:
     kubernetes.io/ingress.class: traefik-external
-    cert-manager.io/cluster-issuer: letsencrypt-production
 spec:
   entryPoints:
   - websecure
@@ -24,4 +23,4 @@ spec:
       port: 80
       scheme: h2c
   tls:
-    secretName: argocd-cert-secret-production
+    secretName: argocd-cert-prod
