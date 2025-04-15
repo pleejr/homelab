@@ -8,5 +8,5 @@ spec:
   issuerRef:
     name: letsencrypt-production
     kind: ClusterIssuer
-dnsNames:
-  - traefik.local.pleejr.org
+  dnsNames:
+    - traefik.local.pleejr.org

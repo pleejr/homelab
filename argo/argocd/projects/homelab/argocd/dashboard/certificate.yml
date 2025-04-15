@@ -8,5 +8,5 @@ spec:
   issuerRef:
     name: letsencrypt-production
     kind: ClusterIssuer
-dnsNames:
-  - argocd.local.pleejr.org
+  dnsNames:
+    - argocd.local.pleejr.org
