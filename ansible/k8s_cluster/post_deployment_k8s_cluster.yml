@@ -1,0 +1,7 @@
+---
+- name: Update Hosts
+  hosts: all_nodes
+  become: true
+  gather_facts: false
+  roles:
+  - post_deployment
