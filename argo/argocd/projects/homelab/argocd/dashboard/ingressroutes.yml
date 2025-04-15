@@ -24,4 +24,6 @@ spec:
       port: 80
       scheme: h2c
   tls:
+  - hosts:
+    - argocd.local.pleejr.org
     secretName: argocd-cert-secret-production

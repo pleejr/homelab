@@ -19,4 +19,6 @@ spec:
     - name: api@internal
       kind: TraefikService
   tls:
+  - hosts:
+    - traefik.local.pleejr.org
     secretName: traefik-cert-secret-production
