@@ -9,7 +9,8 @@ node_gateway: "192.168.2.254"
 
 # KUBERNETES CONFIGURATIONS
 control_plane_endpoint_name: "cluster-endpoint"
-control_plane_endpoint_ip: "192.168.2.30"
+control_plane_endpoint_initial_ip: "192.168.2.30"
+control_plane_endpoint_lb_ip: "192.168.2.50"
 nameserver_01: "8.8.8.8"
 nameserver_02: "8.8.4.4"
 pod_network_cidr: "10.244.0.0/16"
