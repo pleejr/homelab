@@ -1,0 +1,24 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: argocd-dashboard-cert
+  namespace: argocd
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-production
+    kubernetes.io/ingress.class: traefik-external
+spec:
+  tls:
+  - hosts:
+    - argocd.local.pleejr.org
+    secretName: argocd-cert-secret-production
+  rules:
+  - host: argocd.local.pleejr.org
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: dummy-service
+            port:
+              number: 80

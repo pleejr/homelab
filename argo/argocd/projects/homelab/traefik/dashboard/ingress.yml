@@ -1,0 +1,24 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: traefik-dashboard-cert
+  namespace: traefik
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-production
+    kubernetes.io/ingress.class: traefik-external
+spec:
+  tls:
+  - hosts:
+    - traefik.local.pleejr.org
+    secretName: traefik-cert-secret-production
+  rules:
+  - host: traefik.local.pleejr.org
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: dummy-service
+            port:
+              number: 80
