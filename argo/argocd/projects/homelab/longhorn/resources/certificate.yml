@@ -1,0 +1,12 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: longhorn-cert-prod
+  namespace: longhorn-system
+spec:
+  secretName: longhorn-cert-prod
+  issuerRef:
+    name: letsencrypt-prod
+    kind: ClusterIssuer
+  dnsNames:
+    - longhorn.local.pleejr.org
