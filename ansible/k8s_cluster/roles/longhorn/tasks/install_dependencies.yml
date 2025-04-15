@@ -1,0 +1,16 @@
+- name: Load Kernel Module - iscsi_tcp
+  ansible.builtin.modprobe:
+    name: iscsi_tcp
+    state: present
+
+- name: Load Kernel Module at Boot - iscsi_tcp
+  ansible.builtin.lineinfile:
+    path: /etc/modules-load.d/iscsi_tcp.conf
+    line: iscsi_tcp
+    create: yes
+
+- name: Install Package - nfs-common
+  ansible.builtin.apt:
+    name: nfs-common
+    state: present
+    update_cache: yes

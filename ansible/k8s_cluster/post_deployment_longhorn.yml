@@ -1,0 +1,7 @@
+---
+- name: Install Longhorn Dependencies
+  hosts: all_nodes
+  become: true
+  gather_facts: false
+  roles:
+  - longhorn
