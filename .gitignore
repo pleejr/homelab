@@ -1,0 +1,4 @@
+# ansible/k8s_cluster
+adhoc.yml
+# argo/argocd/projects/homelab/cert-manager/resources
+clusterissuer_secret.yml
