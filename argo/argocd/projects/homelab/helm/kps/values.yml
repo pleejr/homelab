@@ -46,8 +46,8 @@ grafana:
     enabled: true
   admin:
     existingSecret: grafana-secret
-    userKey: adminUser
-    passwordKey: adminPass
+    userKey: admin-user
+    passwordKey: admin-password
 
 kubeApiServer:
   enabled: true
