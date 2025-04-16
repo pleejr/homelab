@@ -1,6 +1,6 @@
 apiVersion: v2
 name: kps
-version: 1.0.0
+version: 1.0.1
 dependencies:
   - name: kube-prometheus-stack
     version: 70.4.2
