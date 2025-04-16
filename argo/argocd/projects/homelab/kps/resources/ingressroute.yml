@@ -12,7 +12,7 @@ spec:
   - match: Host(`grafana.local.pleejr.org`)
     kind: Rule
     services:
-    - name: kube-prometheus-stack-grafana
+    - name: grafana
       port: 80
       sticky:
         cookie:
