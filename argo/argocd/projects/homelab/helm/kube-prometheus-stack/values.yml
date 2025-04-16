@@ -191,3 +191,6 @@ storageSpec:
 
 thanosRuler:
   enabled: false
+
+testFramework:
+  enabled: false
