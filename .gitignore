@@ -1,4 +1,5 @@
-# ansible/k8s_cluster
+# ad hoc ansible playbook used locally
 adhoc.yml
-# argo/argocd/projects/homelab/cert-manager/resources
-clusterissuer_secret.yml
+
+# generically-labeled kubernetes secret manifests
+*_secret.yml
