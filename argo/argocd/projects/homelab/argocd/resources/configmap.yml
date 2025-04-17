@@ -5,3 +5,4 @@ metadata:
   namespace: argocd
 data:
   server.insecure: "true"
+  application.instanceLabelKey: argocd.argoproj.io/instance
