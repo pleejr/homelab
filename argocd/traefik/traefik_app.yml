@@ -8,60 +8,12 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: https://traefik.github.io/charts
-    targetRevision: 34.4.1
-    chart: traefik
+    repoURL: https://github.com/pleejr/traefik-helm-chart
+    targetRevision: HEAD
+    path: traefik
     helm:
-      values: |
-        globalArguments:
-          - "--global.sendanonymoususage=false"
-          - "--global.checknewversion=false"
-
-        additionalArguments:
-          - "--serversTransport.insecureSkipVerify=true"
-          - "--log.level=INFO"
-
-        deployment:
-          enabled: true
-          replicas: 3
-          annotations: {}
-          podAnnotations: {}
-          additionalContainers: []
-          initContainers: []
-
-        ports:
-          web:
-            redirections:
-              entryPoint: {}
-          websecure:
-            tls:
-              enabled: true
-
-        ingressRoute:
-          dashboard:
-            enabled: false
-
-        providers:
-          kubernetesCRD:
-            enabled: true
-            ingressClass: traefik-external
-          kubernetesIngress:
-            enabled: true
-            publishedService:
-              enabled: false
-
-        rbac:
-          enabled: true
-
-        service:
-          enabled: true
-          type: LoadBalancer
-          annotations: {}
-          labels: {}
-          spec:
-            loadBalancerIP: 192.168.2.55
-          loadBalancerSourceRanges: []
-          externalIPs: []
+      valuesFiles:
+      - values/homelab.yaml
   destination:
     server: https://kubernetes.default.svc
     namespace: traefik

@@ -8,23 +8,12 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: https://charts.jetstack.io
-    targetRevision: v1.17.0
-    chart: cert-manager
-    helm:
-      parameters:
-        - name: installCRDs
-          value: "true"
-      values: |
-        replicaCount: 1
-        extraArgs:
-          - --dns01-recursive-nameservers=1.1.1.1:53,9.9.9.9:53
-          - --dns01-recursive-nameservers-only
-        podDnsPolicy: None
-        podDnsConfig:
-          nameservers:
-            - "1.1.1.1"
-            - "9.9.9.9"
+    repoURL: https://github.com/pleejr/cert-manager
+    targetRevision: HEAD
+    path: deploy/charts/cert-manager
+  helm:
+    valuesFiles:
+    - values/homelab.yaml
   destination:
     server: https://kubernetes.default.svc
     namespace: cert-manager

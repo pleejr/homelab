@@ -6,13 +6,12 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: https://kubernetes-sigs.github.io/metrics-server/
-    targetRevision: 3.12.2
-    chart: metrics-server
+    repoURL: https://github.com/pleejr/metrics-server
+    targetRevision: HEAD
+    path: charts/metrics-server
     helm:
-      values: |
-        args:
-          - --kubelet-insecure-tls
+      valuesFiles:
+      - values/homelab.yaml
   destination:
     server: https://kubernetes.default.svc
     namespace: kube-system

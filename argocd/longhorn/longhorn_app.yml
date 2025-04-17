@@ -15,12 +15,12 @@ spec:
   project: default
   sources:
     - chart: longhorn
-      repoURL: https://charts.longhorn.io/
-      targetRevision: v1.8.1
+      repoURL: https://github.com/pleejr/longhorn
+      targetRevision: HEAD
+      path: chart
       helm:
-        values: |
-          preUpgradeChecker:
-            jobEnabled: false
+        valuesFiles:
+        - values/homelab.yaml
   destination:
     server: https://kubernetes.default.svc
     namespace: longhorn-system
