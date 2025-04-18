@@ -19,7 +19,7 @@ spec:
       targetRevision: HEAD
       path: chart
       helm:
-        valuesFiles:
+        valueFiles:
         - values/homelab.yaml
   destination:
     server: https://kubernetes.default.svc

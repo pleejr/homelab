@@ -12,7 +12,7 @@ spec:
     targetRevision: HEAD
     path: deploy/charts/cert-manager
   helm:
-    valuesFiles:
+    valueFiles:
     - values/homelab.yaml
   destination:
     server: https://kubernetes.default.svc
