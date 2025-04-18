@@ -15,7 +15,7 @@ spec:
   project: default
   source:
       repoURL: https://github.com/pleejr/longhorn
-      targetRevision: 1.8.1
+      targetRevision: v1.8.1
       path: chart
       helm:
         valueFiles:
