@@ -10,7 +10,7 @@ spec:
   source:
     repoURL: https://github.com/pleejr/homelab
     targetRevision: HEAD
-    path: argocd/cert-manager/resources
+    path: argocd/apps/cert-manager/resources
   destination:
     server: https://kubernetes.default.svc
     namespace: cert-manager
