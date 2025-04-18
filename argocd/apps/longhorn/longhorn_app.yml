@@ -13,8 +13,7 @@ spec:
     syncOptions:
     - CreateNamespace=true
   project: default
-  sources:
-    - chart: longhorn
+  source:
       repoURL: https://github.com/pleejr/longhorn
       targetRevision: 1.8.1
       path: chart
