@@ -16,6 +16,7 @@ spec:
   source:
       repoURL: https://github.com/pleejr/longhorn
       targetRevision: HEAD
+      path: chart
       helm:
         valueFiles:
         - values/homelab.yaml
