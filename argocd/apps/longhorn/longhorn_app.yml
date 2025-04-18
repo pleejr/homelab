@@ -16,11 +16,8 @@ spec:
   sources:
     - chart: longhorn
       repoURL: https://github.com/pleejr/longhorn
-      targetRevision: HEAD
+      targetRevision: v1.8.x
       path: chart
-      helm:
-        valueFiles:
-        - values/homelab.yaml
   destination:
     server: https://kubernetes.default.svc
     namespace: longhorn-system
