@@ -1,0 +1,26 @@
+- name: Add Temporary Host Entry for Initial Cluster-Endpoint
+  ansible.builtin.lineinfile:
+    path: /etc/hosts
+    line: "{{ control_plane_endpoint_initial_ip }} {{ control_plane_endpoint_name }}"
+    state: present
+
+- name: Remove Temporary Host Entry for Load Balanced Cluster-Endpoint
+  ansible.builtin.lineinfile:
+    path: /etc/hosts
+    line: "{{ control_plane_endpoint_lb_ip }} {{ control_plane_endpoint_name }}"
+    insertafter: '^127\.0\.0\.1 localhost$'
+    state: absent
+
+- name: Use Custom hosts.debian.tmpl
+  copy:
+    src: hosts.debian.tmpl
+    dest: /etc/cloud/templates/hosts.debian.tmpl
+    owner: root
+    group: root
+    mode: '0644'
+
+- name: Update Persistent Initial Cluster-Endpoint IP
+  lineinfile:
+    path: /etc/cloud/templates/hosts.debian.tmpl
+    regexp: '# cluster_endpoint_entry'
+    line: "{{ control_plane_endpoint_initial_ip }} {{ control_plane_endpoint_name }}"

@@ -1,5 +1,10 @@
-# Do NOT run these tasks until the following are complete:
+# Do NOT run this task until the following are complete:
 # - metallb is load balancing kubeapi traffic
 ---
-- name: Update Hosts
-  include_tasks: update_hosts.yml
+- name: Update Hosts to Load Balancer
+  include_tasks: update_hosts_to_lb.yml
+
+# Run this task if you need to revert to ip
+# ---
+# - name: Update Hosts to IP
+#   include_tasks: update_hosts_to_ip.yml
