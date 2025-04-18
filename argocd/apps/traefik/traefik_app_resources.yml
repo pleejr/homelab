@@ -11,6 +11,9 @@ spec:
     repoURL: https://github.com/pleejr/homelab
     targetRevision: HEAD
     path: argocd/apps/traefik/resources
+    helm:
+      valueFiles:
+      - values/homelab.yaml
   destination:
     server: https://kubernetes.default.svc
     namespace: traefik
