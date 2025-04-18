@@ -16,7 +16,7 @@ spec:
   sources:
     - chart: longhorn
       repoURL: https://github.com/pleejr/longhorn
-      targetRevision: v1.8.x
+      targetRevision: 1.8.1
       path: chart
   destination:
     server: https://kubernetes.default.svc
