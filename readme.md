@@ -12,6 +12,7 @@ Kubernetes cluster running on 10x Raspberry Pi 5 nodes, used as a self-hosted cl
 | NETGEAR GS308EPP | 2 | 8-port PoE+ Gigabit, 123W PoE budget |
 | CAT6 Patch Cable (0.5ft) | 10 | |
 | FIDECO USB-to-M.2 Docking Station | 1 | Used to flash NVMe SSDs |
+| Google Nest Wifi Pro 6E | 1 | Upstream router, DHCP server for node reservations |
 
 ## Cluster Layout
 
