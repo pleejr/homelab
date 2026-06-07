@@ -1,0 +1,32 @@
+crds:
+  enabled: false  # managed separately by kps-crds app
+
+alertmanager:
+  alertmanagerSpec:
+    storage:
+      volumeClaimTemplate:
+        spec:
+          storageClassName: longhorn
+          accessModes: [ReadWriteOnce]
+          resources:
+            requests:
+              storage: 5Gi
+
+prometheus:
+  prometheusSpec:
+    retention: 7d
+    storageSpec:
+      volumeClaimTemplate:
+        spec:
+          storageClassName: longhorn
+          accessModes: [ReadWriteOnce]
+          resources:
+            requests:
+              storage: 20Gi
+
+grafana:
+  persistence:
+    enabled: true
+    storageClassName: longhorn
+    size: 5Gi
+  adminPassword: changeme

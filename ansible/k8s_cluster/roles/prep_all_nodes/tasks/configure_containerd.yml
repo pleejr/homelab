@@ -4,24 +4,20 @@
     state: directory
     mode: '0755'
 
-- name: Remove Existing Containerd Configuration
-  file:
-    path: /etc/containerd/config.toml
-    state: absent
-
 - name: Generate Default Containerd Configuration
   ansible.builtin.command:
     cmd: containerd config default
   register: containerd_default_config
   changed_when: false
 
-- name: Write Containerd Configuration to /etc/containerd/config.toml
+- name: Write Containerd Configuration
   ansible.builtin.copy:
     content: "{{ containerd_default_config.stdout }}\n"
     dest: /etc/containerd/config.toml
     owner: root
     group: root
     mode: '0644'
+    force: false
 
 - name: Update Containerd Configuration - Enable Systemd Cgroup
   ansible.builtin.replace:
@@ -40,10 +36,7 @@
 - meta: flush_handlers
 
 - name: Verify Containerd Service Status
-  ansible.builtin.command:
-    cmd: systemctl status containerd
+  ansible.builtin.systemd:
+    name: containerd
   register: containerd_status
-  changed_when: false
-  failed_when:
-    - "'containerd successfully booted' not in containerd_status.stdout"
-    - "'level=warning' in containerd_status.stdout or 'level=error' in containerd_status.stdout"
+  failed_when: containerd_status.status.ActiveState != 'active'

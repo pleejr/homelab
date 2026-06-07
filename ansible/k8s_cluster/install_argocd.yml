@@ -1,0 +1,33 @@
+---
+- name: Install Argo CD
+  hosts: primary_node
+  become: false
+  gather_facts: false
+  vars:
+    argocd_version: "v3.4.3"
+  tasks:
+    - name: Create Argo CD Namespace
+      command: kubectl create namespace argocd --dry-run=client -o yaml
+      register: argocd_ns_manifest
+      changed_when: false
+
+    - name: Apply Argo CD Namespace
+      command: kubectl apply -f -
+      args:
+        stdin: "{{ argocd_ns_manifest.stdout }}"
+
+    - name: Apply Argo CD Install Manifest
+      command: >
+        kubectl apply -n argocd
+        -f https://raw.githubusercontent.com/argoproj/argo-cd/{{ argocd_version }}/manifests/install.yaml
+
+    - name: Wait for Argo CD Server Deployment
+      command: kubectl rollout status deployment/argocd-server -n argocd --timeout=300s
+
+    - name: Copy App-of-Apps Manifest
+      copy:
+        src: "{{ playbook_dir }}/../../argocd/apps/appofapps.yml"
+        dest: /tmp/appofapps.yml
+
+    - name: Apply App-of-Apps
+      command: kubectl apply -f /tmp/appofapps.yml

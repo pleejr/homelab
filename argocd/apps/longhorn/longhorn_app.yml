@@ -6,20 +6,23 @@ metadata:
   annotations:
     argocd.argoproj.io/sync-wave: "1"
 spec:
+  project: default
+  sources:
+    - repoURL: https://charts.longhorn.io
+      chart: longhorn
+      targetRevision: 1.12.0
+      helm:
+        valueFiles:
+          - $values/argocd/apps/longhorn/values/homelab.yaml
+    - repoURL: https://github.com/pleejr/homelab
+      targetRevision: HEAD
+      ref: values
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: longhorn-system
   syncPolicy:
     automated:
       prune: true
       selfHeal: true
     syncOptions:
-    - CreateNamespace=true
-  project: default
-  source:
-      repoURL: https://github.com/pleejr/longhorn
-      targetRevision: HEAD
-      path: chart
-      helm:
-        valueFiles:
-        - values/homelab.yaml
-  destination:
-    server: https://kubernetes.default.svc
-    namespace: longhorn-system
+      - CreateNamespace=true

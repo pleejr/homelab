@@ -1,19 +1,19 @@
-- name: Load Kernel Module - overlay
-  command: sudo modprobe overlay
-  changed_when: false
+- name: Persist Kernel Modules Across Reboots
+  ansible.builtin.copy:
+    dest: /etc/modules-load.d/k8s.conf
+    content: |
+      overlay
+      br_netfilter
+    owner: root
+    group: root
+    mode: '0644'
 
-- name: Verify Module Loaded - overlay
-  shell: lsmod | grep overlay
-  register: overlay_check
-  changed_when: false
-  failed_when: "'overlay' not in overlay_check.stdout"
+- name: Load Kernel Module - overlay
+  ansible.builtin.modprobe:
+    name: overlay
+    state: present
 
 - name: Load Kernel Module - br_netfilter
-  command: sudo modprobe br_netfilter
-  changed_when: false
-
-- name: Verify Module Loaded - br_netfilter
-  shell: lsmod | grep br_netfilter
-  register: br_netfilter_check
-  changed_when: false
-  failed_when: "'br_netfilter' not in br_netfilter_check.stdout"
+  ansible.builtin.modprobe:
+    name: br_netfilter
+    state: present

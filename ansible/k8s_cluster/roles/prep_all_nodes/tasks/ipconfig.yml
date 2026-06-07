@@ -19,7 +19,9 @@
             dhcp4: no
             addresses:
               - {{ node_ip_allocation }}/24
-            gateway4: {{ node_gateway }}
+            routes:
+              - to: default
+                via: {{ node_gateway }}
             nameservers:
               addresses:
                 - {{ nameserver_01 }}

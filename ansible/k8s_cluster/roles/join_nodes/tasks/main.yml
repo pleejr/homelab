@@ -1,33 +1,34 @@
 ---
+- name: Check Join Status
+  stat:
+    path: /etc/kubernetes/kubelet.conf
+  register: kubelet_conf
+
 - name: Retrieve Kubeadm Baseline Join Command
   command: kubeadm token create --print-join-command
   register: join_command
   changed_when: false
   when: "'primary_node' in group_names"
 
-- name: Retrieve a Cluster Certificate Key
-  command: kubeadm certs certificate-key
+- name: Upload Certificates and Retrieve Certificate Key
+  command: kubeadm init phase upload-certs --upload-certs
   register: cert_key
   changed_when: false
   when: "'primary_node' in group_names"
 
-- name: Set Facts
-  set_fact:
-    join_command: "{{ join_command.stdout }}"
-    cert_key: "{{ cert_key.stdout }}"
-  delegate_to: localhost
-  run_once: true
-
 - name: Join Control Plane Nodes to Cluster
   become: true
-  command: "{{ join_command }} --control-plane --certificate-key {{ cert_key }}"
+  command: >
+    {{ hostvars[groups['primary_node'][0]]['join_command']['stdout'] }}
+    --control-plane
+    --certificate-key {{ hostvars[groups['primary_node'][0]]['cert_key']['stdout_lines'] | last }}
   register: controlplane_join_status
   failed_when: "'This node has joined the cluster' not in controlplane_join_status.stdout"
-  when: "'controlplane_nodes' in group_names and 'primary_node' not in group_names"
+  when: "'controlplane_nodes' in group_names and 'primary_node' not in group_names and not kubelet_conf.stat.exists"
 
 - name: Join Worker Nodes to Cluster
   become: true
-  command: "{{ join_command }}"
+  command: "{{ hostvars[groups['primary_node'][0]]['join_command']['stdout'] }}"
   register: worker_join_status
   failed_when: "'This node has joined the cluster' not in worker_join_status.stdout"
-  when: "'worker_nodes' in group_names"
+  when: "'worker_nodes' in group_names and not kubelet_conf.stat.exists"

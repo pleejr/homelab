@@ -5,13 +5,16 @@ metadata:
   namespace: argocd
 spec:
   project: default
-  source:
-    repoURL: https://github.com/pleejr/metrics-server
-    targetRevision: HEAD
-    path: charts/metrics-server
-    helm:
-      valueFiles:
-      - values/homelab.yaml
+  sources:
+    - repoURL: https://kubernetes-sigs.github.io/metrics-server/
+      chart: metrics-server
+      targetRevision: 3.13.0
+      helm:
+        valueFiles:
+          - $values/argocd/apps/metricsserver/values/homelab.yaml
+    - repoURL: https://github.com/pleejr/homelab
+      targetRevision: HEAD
+      ref: values
   destination:
     server: https://kubernetes.default.svc
     namespace: kube-system
@@ -20,4 +23,4 @@ spec:
       prune: true
       selfHeal: true
     syncOptions:
-    - CreateNamespace=true
+      - CreateNamespace=true

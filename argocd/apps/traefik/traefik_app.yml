@@ -7,13 +7,16 @@ metadata:
     argocd.argoproj.io/sync-wave: "1"
 spec:
   project: default
-  source:
-    repoURL: https://github.com/pleejr/traefik-helm-chart
-    targetRevision: HEAD
-    path: traefik
-    helm:
-      valueFiles:
-      - values/homelab.yaml
+  sources:
+    - repoURL: https://helm.traefik.io/traefik
+      chart: traefik
+      targetRevision: 40.2.0
+      helm:
+        valueFiles:
+          - $values/argocd/apps/traefik/values/homelab.yaml
+    - repoURL: https://github.com/pleejr/homelab
+      targetRevision: HEAD
+      ref: values
   destination:
     server: https://kubernetes.default.svc
     namespace: traefik

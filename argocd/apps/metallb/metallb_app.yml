@@ -8,9 +8,9 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: https://github.com/pleejr/metallb
-    targetRevision: v0.14
-    path: charts/metallb
+    repoURL: https://metallb.github.io/metallb
+    chart: metallb
+    targetRevision: 0.16.1
   destination:
     server: https://kubernetes.default.svc
     namespace: metallb-system
@@ -19,4 +19,4 @@ spec:
       prune: true
       selfHeal: true
     syncOptions:
-    - CreateNamespace=true
+      - CreateNamespace=true

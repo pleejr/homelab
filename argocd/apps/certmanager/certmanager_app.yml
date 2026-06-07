@@ -7,13 +7,16 @@ metadata:
     argocd.argoproj.io/sync-wave: "1"
 spec:
   project: default
-  source:
-    repoURL: https://github.com/pleejr/cert-manager
-    targetRevision: HEAD
-    path: deploy/charts/cert-manager
-  helm:
-    valueFiles:
-    - values/homelab.yaml
+  sources:
+    - repoURL: https://charts.jetstack.io
+      chart: cert-manager
+      targetRevision: v1.20.2
+      helm:
+        valueFiles:
+          - $values/argocd/apps/certmanager/values/homelab.yaml
+    - repoURL: https://github.com/pleejr/homelab
+      targetRevision: HEAD
+      ref: values
   destination:
     server: https://kubernetes.default.svc
     namespace: cert-manager
