@@ -12,17 +12,20 @@ Kubernetes cluster running on 10x Raspberry Pi 5 nodes, used as a self-hosted cl
 | NETGEAR GS308EPP | 2 | 8-port PoE+ Gigabit, 123W PoE budget |
 | CAT6 Patch Cable (0.5ft) | 10 | |
 | FIDECO USB-to-M.2 Docking Station | 1 | Used to flash NVMe SSDs |
-| Google Nest Wifi Pro 6E | 1 | Upstream router, DHCP server for node reservations |
+| Ubiquiti networking gear | 1 | Gateway (10.0.10.254), static IP assignments for the cluster |
 
 ## Cluster Layout
 
 | Role | Nodes | IPs |
 |------|-------|-----|
-| Control plane | node01, node02, node03 | 192.168.2.30–32 |
-| Workers | node04–node10 | 192.168.2.33–39 |
-| MetalLB pool | — | 192.168.2.50–59 |
-| Control plane VIP | — | 192.168.2.50 |
-| Traefik ingress | — | 192.168.2.55 |
+| Control plane | node01, node02, node03 | 10.0.10.1–3 |
+| Workers | node04–node10 | 10.0.10.4–10 |
+| MetalLB pool | — | 10.0.10.50–99 |
+| Control plane VIP | — | 10.0.10.50 |
+| Traefik ingress | — | 10.0.10.55 |
+| Gateway | — | 10.0.10.254 |
+
+Last octet of each node IP matches its node number (node01 = .1, node07 = .7, etc.). Range `.11–.49` is reserved for future infrastructure.
 
 ## Stack
 
@@ -80,7 +83,7 @@ homelab/
 ### Prerequisites
 
 - Ubuntu 24.04 Server arm64 flashed to all NVMe SSDs via the FIDECO docking station
-- DHCP reservations set on the switches (192.168.2.30–39, keyed to each node's MAC address)
+- Nodes reachable on the 10.0.10.0/24 subnet (static IPs are applied via netplan during the prep role; before that, the nodes need to be reachable by hostname for the initial Ansible run)
 - Ansible installed on your local machine
 - SSH key deployed to all nodes
 
@@ -120,7 +123,7 @@ Argo CD will sync in wave order:
 
 ### 4. Switch cluster-endpoint to load balancer
 
-Once MetalLB is running and the kube-apiserver LoadBalancer service is assigned `192.168.2.50`:
+Once MetalLB is running and the kube-apiserver LoadBalancer service is assigned `10.0.10.50`:
 
 ```bash
 ansible-playbook post_deployment_k8s_cluster.yml
@@ -130,7 +133,7 @@ This updates `/etc/hosts` on all nodes to resolve `cluster-endpoint` to the Meta
 
 ## Accessing Services
 
-All services are exposed via Traefik at `192.168.2.55` with TLS certificates issued by Let's Encrypt through Cloudflare DNS01 challenge.
+All services are exposed via Traefik at `10.0.10.55` with TLS certificates issued by Let's Encrypt through Cloudflare DNS01 challenge.
 
 | Service | URL |
 |---------|-----|
@@ -147,8 +150,9 @@ Key variables are in `ansible/k8s_cluster/group_vars/all_nodes.yml`:
 kubernetes_version: "v1.32"
 calico_version: "v3.29.2"
 pod_network_cidr: "10.244.0.0/16"
+service_cidr: "10.96.0.0/16"
 control_plane_endpoint_name: "cluster-endpoint"
-control_plane_endpoint_lb_ip: "192.168.2.50"
+control_plane_endpoint_lb_ip: "10.0.10.50"
 ```
 
 Helm chart versions are pinned in each app manifest under `argocd/apps/`.
