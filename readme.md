@@ -9,10 +9,13 @@ Kubernetes cluster running on 10x Raspberry Pi 5 nodes, used as a self-hosted cl
 | Raspberry Pi 5 | 10 | 16GB RAM |
 | PCIe M.2 Adapter + PoE HAT | 10 | Powers Pi via PoE, exposes NVMe slot |
 | INLAND M.2 2242 NVMe SSD | 10 | 1TB, PCIe Gen 3x4 |
-| NETGEAR GS308EPP | 2 | 8-port PoE+ Gigabit, 123W PoE budget |
 | CAT6 Patch Cable (0.5ft) | 10 | |
 | FIDECO USB-to-M.2 Docking Station | 1 | Used to flash NVMe SSDs |
-| Ubiquiti networking gear | 1 | Gateway (10.0.10.254), static IP assignments for the cluster |
+| UCG Fiber | 1 | Gateway (10.0.10.254), 10G SFP+ WAN, 2.5G LAN |
+| USW-Lite-8-PoE | 1 | 8-port gigabit aggregation switch between gateway and 16-port |
+| USW-Pro-Max-16-PoE | 1 | 16-port 2.5G PoE switch, hosts all 10 Pi nodes |
+
+**Topology:** UCG Fiber → USW-Lite-8-PoE → USW-Pro-Max-16-PoE → Pi nodes. Node-to-node (east-west) traffic runs at 2.5G since it stays on the Pro Max switch; northbound traffic (to gateway/internet) is capped at 1G by the USW-Lite-8-PoE uplink.
 
 ## Cluster Layout
 
