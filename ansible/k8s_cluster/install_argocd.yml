@@ -17,8 +17,10 @@
         stdin: "{{ argocd_ns_manifest.stdout }}"
 
     - name: Apply Argo CD Install Manifest
+      # Server-side apply: the applicationsets.argoproj.io CRD has a large
+      # embedded OpenAPI schema and client-side apply hits the 256KiB annotation limit.
       command: >
-        kubectl apply -n argocd
+        kubectl apply --server-side --force-conflicts -n argocd
         -f https://raw.githubusercontent.com/argoproj/argo-cd/{{ argocd_version }}/manifests/install.yaml
 
     - name: Wait for Argo CD Server Deployment
