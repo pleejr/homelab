@@ -5,3 +5,9 @@ defaultSettings:
 
 persistence:
   defaultClassReplicaCount: 3
+
+# Pre-upgrade hook needs longhorn-service-account, which is created in main
+# sync. On fresh Argo CD installs the Job blocks PreSync forever. Chart docs
+# explicitly recommend disabling for GitOps installs.
+preUpgradeChecker:
+  jobEnabled: false
