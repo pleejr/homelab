@@ -1,6 +1,6 @@
-globalArguments:
-  - "--global.sendanonymoususage=false"
-  - "--global.checknewversion=false"
+global:
+  sendAnonymousUsage: false
+  checkNewVersion: false
 
 additionalArguments:
   - "--serversTransport.insecureSkipVerify=true"
@@ -16,11 +16,13 @@ deployment:
 
 ports:
   web:
-    redirections:
-      entryPoint: {}
+    http:
+      redirections:
+        entryPoint: {}
   websecure:
-    tls:
-      enabled: true
+    http:
+      tls:
+        enabled: true
 
 ingressRoute:
   dashboard:
