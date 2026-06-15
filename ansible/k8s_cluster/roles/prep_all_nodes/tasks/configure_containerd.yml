@@ -17,7 +17,8 @@
     owner: root
     group: root
     mode: '0644'
-    force: false
+    force: true
+  notify: Restart Containerd
 
 - name: Update Containerd Configuration - Enable Systemd Cgroup
   ansible.builtin.replace:

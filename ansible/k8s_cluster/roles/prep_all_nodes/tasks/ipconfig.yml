@@ -8,9 +8,30 @@
   set_fact:
     default_interface: "{{ (network_facts.ansible_facts.ansible_interfaces | select('search', 'eth') | list)[0] }}"
 
+# Pi Imager's Ubuntu image hands network management to cloud-init via
+# /etc/netplan/50-cloud-init.yaml. Netplan merges YAML files alphabetically
+# with later files winning, so we must disable cloud-init's network config
+# and drop its file — otherwise our static config is silently overridden.
+- name: Disable cloud-init Network Management
+  copy:
+    dest: /etc/cloud/cloud.cfg.d/99-disable-network-config.cfg
+    owner: root
+    group: root
+    mode: '0644'
+    content: |
+      network: {config: disabled}
+
+- name: Remove cloud-init Netplan File
+  ansible.builtin.file:
+    path: /etc/netplan/50-cloud-init.yaml
+    state: absent
+
 - name: Generate Netplan Configuration
   copy:
     dest: /etc/netplan/01-netcfg.yaml
+    owner: root
+    group: root
+    mode: '0600'
     content: |
       network:
         version: 2

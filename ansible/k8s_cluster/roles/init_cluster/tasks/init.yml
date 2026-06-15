@@ -3,11 +3,6 @@
     path: /etc/kubernetes/admin.conf
   register: kubeadm_config
 
-- name: Fail On Already Initialized
-  fail:
-    msg: "Kubernetes was already initialized and cannot be re-initialized."
-  when: kubeadm_config.stat.exists
-
 - name: Initialize Kubernetes Control Plane
   command: kubeadm init --pod-network-cidr={{ pod_network_cidr }} --service-cidr={{ service_cidr }} --control-plane-endpoint={{ control_plane_endpoint_name }} --upload-certs
   register: kubeadm_output
@@ -20,18 +15,22 @@
   copy:
     content: "{{ kubeadm_output.stdout }}\n{{ kubeadm_output.stderr }}"
     dest: /var/log/kubeadm-init.log
-  when: kubeadm_output is defined
+  when: kubeadm_output is defined and kubeadm_output.stdout is defined
 
+# NB: lookup('env', 'HOME') evaluates on the controller, not the remote host —
+# so on a Mac controller it writes to /Users/<user>/ rather than /home/<user>/.
 - name: Create Directory - $HOME/.kube
   file:
-    path: "{{ lookup('env', 'HOME') }}/.kube"
+    path: "/home/{{ ansible_user }}/.kube"
     state: directory
+    owner: "{{ ansible_user }}"
+    group: "{{ ansible_user }}"
     mode: '0755'
 
 - name: Copy Kubernetes Admin.conf
   copy:
     src: /etc/kubernetes/admin.conf
-    dest: "{{ lookup('env', 'HOME') }}/.kube/config"
+    dest: "/home/{{ ansible_user }}/.kube/config"
     owner: "{{ ansible_user }}"
     group: "{{ ansible_user }}"
     mode: '0644'
@@ -39,7 +38,7 @@
 
 - name: Change Kubeconfig Ownership
   file:
-    path: "{{ lookup('env', 'HOME') }}/.kube/config"
+    path: "/home/{{ ansible_user }}/.kube/config"
     owner: "{{ ansible_user }}"
     group: "{{ ansible_user }}"
     mode: '0644'

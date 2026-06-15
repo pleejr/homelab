@@ -28,7 +28,9 @@
   when: "'primary_node' in group_names"
 
 - name: Apply Tigera Operator
-  command: kubectl apply -f /tmp/tigera-operator.yml
+  # Server-side apply: the installations.operator.tigera.io CRD has a large
+  # embedded OpenAPI schema and client-side apply hits the 256KiB annotation limit.
+  command: kubectl apply --server-side --force-conflicts -f /tmp/tigera-operator.yml
   when: "'primary_node' in group_names"
 
 - name: Download Calico CNI Manifest
@@ -46,7 +48,7 @@
   when: "'primary_node' in group_names"
 
 - name: Apply Calico CNI
-  command: kubectl apply -f /tmp/calico-crd.yml
+  command: kubectl apply --server-side --force-conflicts -f /tmp/calico-crd.yml
   when: "'primary_node' in group_names"
 
 - name: Download & Install Calicoctl
