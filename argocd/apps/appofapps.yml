@@ -11,6 +11,11 @@ spec:
     path: argocd/apps
     directory:
       recurse: true
+      # Match only Application manifests (e.g. kps_app.yml, kps_app_resources.yml).
+      # Resource YAMLs (Certificate, IngressRoute, Service, etc.) and Helm values
+      # files live under resources/ and values/ subdirs and are owned by the
+      # per-component *-resources Applications, not by app-of-apps itself.
+      include: "*_app*.yml"
   destination:
     server: https://kubernetes.default.svc
     namespace: argocd
