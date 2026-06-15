@@ -5,12 +5,12 @@ kubernetes_version: "v1.32"
 
 # SYSTEM CONFIGURATIONS
 ansible_python_interpreter: "/usr/bin/python3"
-node_gateway: "10.0.10.254"
+node_gateway: "10.0.20.254"
 
 # KUBERNETES CONFIGURATIONS
 control_plane_endpoint_name: "cluster-endpoint"
-control_plane_endpoint_initial_ip: "10.0.10.1"
-control_plane_endpoint_lb_ip: "10.0.10.50"
+control_plane_endpoint_initial_ip: "10.0.20.1"
+control_plane_endpoint_lb_ip: "10.0.20.50"
 nameserver_01: "8.8.8.8"
 nameserver_02: "8.8.4.4"
 pod_network_cidr: "10.244.0.0/16"
