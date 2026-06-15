@@ -1,6 +1,9 @@
 - name: Add Temporary Host Entry for Initial Cluster-Endpoint
   ansible.builtin.lineinfile:
     path: /etc/hosts
+    # Match any IP that previously mapped to cluster-endpoint, so subnet
+    # migrations replace the entry instead of stacking duplicates.
+    regexp: '^\d+\.\d+\.\d+\.\d+\s+{{ control_plane_endpoint_name }}\s*$'
     line: "{{ control_plane_endpoint_initial_ip }} {{ control_plane_endpoint_name }}"
     state: present
 
