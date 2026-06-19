@@ -1,0 +1,50 @@
+---
+# Maintenance playbook: regenerate the apiserver serving cert on each control
+# plane node so it picks up apiServer.certSANs from the kubeadm-config ConfigMap
+# (e.g. after adding the kube-vip control-plane VIP to the SAN list).
+#
+# Fresh deploys already get the VIP SAN via the --apiserver-cert-extra-sans flag
+# in roles/init_cluster; this playbook retrofits an EXISTING cluster.
+#
+# Idempotent: skips any node whose apiserver cert already contains the VIP.
+# serial:1 keeps quorum and the VIP up while certs are cycled one node at a time.
+- name: Renew apiserver Certs with Updated SANs
+  hosts: controlplane_nodes
+  become: true
+  gather_facts: false
+  serial: 1
+  tasks:
+  - name: Check Whether apiserver Cert Already Has the VIP SAN
+    ansible.builtin.shell: >
+      set -o pipefail &&
+      openssl x509 -in /etc/kubernetes/pki/apiserver.crt -noout -text
+      | grep -Fqw "{{ control_plane_endpoint_vip }}"
+    args:
+      executable: /bin/bash
+    register: certsan_present
+    changed_when: false
+    failed_when: false
+
+  - name: Regenerate and Reload apiserver Cert
+    when: certsan_present.rc != 0
+    block:
+    - name: Renew apiserver Cert (reads certSANs from kubeadm-config)
+      ansible.builtin.command: kubeadm certs renew apiserver
+
+    - name: Cycle apiserver Static Pod to Load the New Cert
+      ansible.builtin.shell: |
+        mv /etc/kubernetes/manifests/kube-apiserver.yaml /tmp/kube-apiserver.yaml
+        sleep 3
+        mv /tmp/kube-apiserver.yaml /etc/kubernetes/manifests/kube-apiserver.yaml
+      args:
+        executable: /bin/bash
+
+    - name: Wait for the Local apiserver to Recover
+      ansible.builtin.uri:
+        url: "https://{{ node_ip_allocation }}:6443/healthz"
+        validate_certs: false
+        status_code: 200
+      register: api_health
+      until: api_health.status == 200
+      retries: 24
+      delay: 5
