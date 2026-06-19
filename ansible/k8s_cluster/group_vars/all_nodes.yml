@@ -1,5 +1,6 @@
 # VERSION CONFIGURATIONS
 calico_version: "v3.29.2"
+kube_vip_version: "v0.8.7"
 kubernetes_image_pause_version: "3.10"
 kubernetes_version: "v1.32"
 
@@ -10,7 +11,13 @@ node_gateway: "10.0.20.254"
 # KUBERNETES CONFIGURATIONS
 control_plane_endpoint_name: "cluster-endpoint"
 control_plane_endpoint_initial_ip: "10.0.20.1"
-control_plane_endpoint_lb_ip: "10.0.20.50"
+# kube-vip ARP VIP that owns the control-plane endpoint. Must be OUTSIDE the
+# MetalLB pool (10.0.20.50-99) and the DHCP scope (10.0.20.100-254). Lives in
+# the reserved-infra static range (10.0.20.11-49). kube-vip runs as a static
+# pod on the control-plane nodes, so it comes up before the CNI and survives a
+# cold boot (unlike the old MetalLB LoadBalancer endpoint, which deadlocked).
+control_plane_endpoint_vip: "10.0.20.11"
+vip_interface: "eth0"
 nameserver_01: "8.8.8.8"
 nameserver_02: "8.8.4.4"
 pod_network_cidr: "10.244.0.0/16"

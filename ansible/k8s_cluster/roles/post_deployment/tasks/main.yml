@@ -1,7 +1,7 @@
 # Do NOT run this task until the following are complete:
-# - metallb is load balancing kubeapi traffic
+# - the kube_vip role has run and the control-plane VIP is answering
 ---
-- name: Update Hosts to Load Balancer
+- name: Update Hosts to Control-Plane VIP
   include_tasks: update_hosts_to_lb.yml
 
 # Run this task if you need to revert to ip

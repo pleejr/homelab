@@ -49,6 +49,13 @@
   roles:
   - join_nodes
 
+- name: Deploy kube-vip Control-Plane VIP
+  hosts: controlplane_nodes
+  become: true
+  gather_facts: false
+  roles:
+  - kube_vip
+
 - name: Check Cluster Readiness
   hosts: primary_node
   become: false

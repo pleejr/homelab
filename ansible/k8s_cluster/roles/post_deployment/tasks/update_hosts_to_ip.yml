@@ -7,7 +7,7 @@
 - name: Remove Temporary Host Entry for Load Balanced Cluster-Endpoint
   ansible.builtin.lineinfile:
     path: /etc/hosts
-    line: "{{ control_plane_endpoint_lb_ip }} {{ control_plane_endpoint_name }}"
+    line: "{{ control_plane_endpoint_vip }} {{ control_plane_endpoint_name }}"
     insertafter: '^127\.0\.0\.1 localhost$'
     state: absent
 

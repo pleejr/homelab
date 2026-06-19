@@ -1,0 +1,28 @@
+---
+# Deploys kube-vip as a static pod on each control-plane node to own the
+# control-plane VIP ({{ control_plane_endpoint_vip }}) in ARP mode with leader
+# election. Static pods start from /etc/kubernetes/manifests before the CNI and
+# before API registration, so the VIP comes up on a cold boot without the
+# bootstrap deadlock the old MetalLB LoadBalancer endpoint suffered.
+- name: Pre-pull kube-vip Image
+  ansible.builtin.command: "crictl pull ghcr.io/kube-vip/kube-vip:{{ kube_vip_version }}"
+  register: kube_vip_pull
+  changed_when: false
+
+- name: Deploy kube-vip Static Pod Manifest
+  ansible.builtin.template:
+    src: kube-vip.yaml.j2
+    dest: /etc/kubernetes/manifests/kube-vip.yaml
+    owner: root
+    group: root
+    mode: '0600'
+
+- name: Wait for Control-Plane VIP to Answer
+  ansible.builtin.uri:
+    url: "https://{{ control_plane_endpoint_vip }}:6443/healthz"
+    validate_certs: false
+    status_code: 200
+  register: vip_health
+  until: vip_health.status == 200
+  retries: 30
+  delay: 5
